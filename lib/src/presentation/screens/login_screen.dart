@@ -1,10 +1,9 @@
+import 'package:app_creative_val/src/presentation/cubit/password_visibility/password_visibility_cubit.dart';
+import 'package:app_creative_val/src/presentation/cubit/user/user_cubit.dart';
+import 'package:app_creative_val/src/presentation/screens/home_page.dart';
+import 'package:app_creative_val/src/presentation/widgets/input_decorations_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Importa Firebase Auth
-import 'package:app_creative_val/src/core/features/auth/presentation/cubit/authentication_firebase_cubit.dart';
-import 'package:app_creative_val/src/core/features/auth/presentation/cubit/password_visibility_cubit.dart';
-import 'package:app_creative_val/src/core/features/home/presentation/pages/home_page.dart';
-import '../widgets/input_decorations_form.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,7 +13,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late AuthenticationCubit _authenticationCubit;
   bool _passwordVisible = false;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -22,24 +20,35 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _authenticationCubit = AuthenticationCubit();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: BlocProvider(
-        create: (context) => PasswordVisibilityCubit(),
-        child: SizedBox(
-          width: double.infinity,
-          height: double.infinity,
-          child: Stack(
-            children: [
-              boxColorInitial(size),
-              iconUser(),
-              formLogin(),
-            ],
+    return BlocListener<UserCubit, UserState>(
+      listener: (context, state) {
+        // TODO: implement listener
+        if (state is Authenticated) {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => HomePage()));
+        }
+      },
+      child: Scaffold(
+        body: BlocProvider(
+          create: (context) => UserCubit(),
+          child: BlocProvider(
+            create: (context) => PasswordVisibilityCubit(),
+            child: SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: Stack(
+                children: [
+                  boxColorInitial(size),
+                  iconUser(),
+                  formLogin(),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -125,8 +134,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             style:
                                 TextStyle(color: Colors.white, fontSize: 17)),
                       ),
-                      onPressed: () {
-                        _signInWithEmailAndPassword(); // Iniciar sesión al presionar el botón
+                      onPressed: () async {
+                        final email = _emailController.text;
+                        final password = _passwordController.text;
+
+                        context.read<UserCubit>().signInWithEmailAndPassword(
+                            email: email, password: password);
                       },
                     ),
                     const SizedBox(height: 15),
@@ -154,30 +167,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> _signInWithEmailAndPassword() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    try {
-      // Autenticar al usuario utilizando Firebase Auth
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      // Emitir un estado de autenticación exitosa directamente en el cubit
-      context.read<AuthenticationCubit>().emit(AuthenticationAuthenticated());
-      // Navegar a la página de inicio
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
-        ),
-      );
-    } catch (e) {
-      // Manejar errores de autenticación
-      print('Error al iniciar sesión: $e');
-      // Puedes mostrar un mensaje de error al usuario si lo deseas
-    }
   }
 
   SafeArea iconUser() {

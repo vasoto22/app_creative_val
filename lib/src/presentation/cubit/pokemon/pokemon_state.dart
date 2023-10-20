@@ -21,6 +21,8 @@ final class PokemonLoaded extends PokemonState {
   PokemonLoaded({required this.pokemonList});
 }
 
+class PokemonEmpty extends PokemonState {}
+
 final class PokemonError extends PokemonState {
   final String message;
 

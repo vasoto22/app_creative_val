@@ -27,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final size = MediaQuery.of(context).size;
     return BlocListener<UserCubit, UserState>(
       listener: (context, state) {
-        // TODO: implement listener
         if (state is Authenticated) {
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => HomePage()));

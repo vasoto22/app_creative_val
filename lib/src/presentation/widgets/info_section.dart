@@ -1,22 +1,38 @@
 import 'package:flutter/material.dart';
 
-class InfoSection extends StatelessWidget {
-  final Map<String, dynamic> pokemonDetail;
-  final double width;
-  final double height;
+class InfoRow extends StatelessWidget {
+  final String label;
+  final String value;
 
-  const InfoSection(
-      {required this.pokemonDetail, required this.width, required this.height});
+  const InfoRow({Key? key, required this.label, required this.value})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: height * 0.18,
-      right: -30,
-      child: Image.asset(
-        '../../../../assets/images/pokeball.png',
-        height: 200,
-        fit: BoxFit.fitHeight,
+    var width = MediaQuery.of(context).size.width;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          SizedBox(
+            width: width * 0.3,
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Colors.blueGrey,
+                fontSize: 17,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 17,
+            ),
+          ),
+        ],
       ),
     );
   }

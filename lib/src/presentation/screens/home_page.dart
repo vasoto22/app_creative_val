@@ -20,16 +20,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
-    Color _greenColor = Color(0xff2a9d8f);
-    Color _redColor = Color(0xffe76f51);
-    Color _blueColor = Color(0xff37A5C6);
-
     return Scaffold(
-      // backgroundColor: Colors
-      //     .transparent, // Establece el fondo del Scaffold como transparente.
       body: Stack(
         children: [
           Positioned(
@@ -42,20 +35,21 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Positioned(
-              top: 60,
-              left: 20,
-              child: Text(
-                'Poke Oke',
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.6),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                ),
-              )),
+            top: 60,
+            left: 20,
+            child: Text(
+              'Poke Oke',
+              style: TextStyle(
+                color: Colors.black.withOpacity(0.6),
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ),
+            ),
+          ),
           Positioned(
             top: 150,
             bottom: 0,
-            width: width, // Alinea el contenido debajo del espacio en blanco
+            width: width,
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -214,10 +208,8 @@ class _HomePageState extends State<HomePage> {
 
   Color getColorForType(List<String> types) {
     if (types.isEmpty) {
-      return Colors
-          .pink; // Color predeterminado si la lista de tipos está vacía
+      return Colors.pink;
     }
-    // Aquí puedes seleccionar un tipo específico de la lista de tipos
     String primaryType = types[0];
 
     switch (primaryType) {

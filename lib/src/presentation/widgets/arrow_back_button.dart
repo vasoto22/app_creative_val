@@ -12,7 +12,7 @@ class ArrowBack extends StatelessWidget {
       left: 5,
       child: IconButton(
           icon: const Icon(
-            Icons.arrow_back_ios,
+            Icons.arrow_circle_left_outlined,
             color: Colors.white,
             size: 20,
           ),

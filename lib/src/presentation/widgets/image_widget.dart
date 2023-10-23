@@ -11,7 +11,7 @@ class ImageWidget extends StatelessWidget {
       right: 0,
       bottom: 0,
       child: Container(
-        height: 30,
+        height: 20,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -21,7 +21,7 @@ class ImageWidget extends StatelessWidget {
               Colors.black.withOpacity(0.4),
             ],
           ),
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(500),
             bottomRight: Radius.circular(500),
           ),

@@ -4,6 +4,7 @@ import 'package:app_creative_val/src/presentation/screens/home_page.dart';
 import 'package:app_creative_val/src/presentation/widgets/input_decorations_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,6 +21,18 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    _loadAuthDataLocally();
+  }
+
+  Future<void> _loadAuthDataLocally() async {
+    final prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString('user_email');
+    final password = prefs.getString('user_password');
+
+    if (email != null && password != null) {
+      _emailController.text = email;
+      _passwordController.text = password;
+    }
   }
 
   @override
@@ -28,8 +41,20 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocListener<UserCubit, UserState>(
       listener: (context, state) {
         if (state is Authenticated) {
+          final scaffoldMessenger = ScaffoldMessenger.of(context);
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('User data saved locally.'),
+            ),
+          );
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => HomePage()));
+        } else if (state is Error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Email or password is incorrect.'),
+            ),
+          );
         }
       },
       child: Scaffold(
@@ -168,17 +193,32 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget _buildErrorText(String errorText) {
+    if (errorText.isNotEmpty) {
+      return Text(
+        errorText,
+        style: TextStyle(color: Colors.red),
+      );
+    }
+    return const SizedBox(); // Espacio en blanco si no hay error
+  }
+
   SafeArea iconUser() {
     return SafeArea(
       child: Container(
-        margin: const EdgeInsets.only(
-          top: 30,
-        ),
+        // margin: const EdgeInsets.only(
+        //   top: 30,
+        //   // bottom: 100.0,
+        // ),
         width: double.infinity,
-        child: const Icon(
-          Icons.person_pin_circle_outlined,
-          color: Colors.white,
-          size: 90.0,
+        child: FractionalTranslation(
+          translation: Offset(0.0, -0.2),
+          child: Image.asset(
+            'assets/images/pokeOkeUser.png',
+            width: 450.0,
+            height: 450.0,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );
